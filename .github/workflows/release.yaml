@@ -8,8 +8,8 @@ env:
   GORELEASER_VERSION: v0.180.3
   CHANGELOG_FILE: /tmp/CHANGELOG.md
 jobs:
-  release:
-    name: release
+  increment-version:
+    name: increment-version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,11 +26,22 @@ jobs:
           github_token: ${{ github.token }}
           release_branches: main
           tag_prefix: v
-      - name: Fetch new remote tag
-        run: git fetch origin "refs/tags/*:refs/tags/*"
+    outputs:
+      new_version: ${{ steps.increment-version.outputs.new_version }}
+      changelog: ${{ steps.increment-version.outputs.changelog }}
+  release:
+    name: release
+    needs: increment-version
+    if: needs.increment-version.outputs.new_version != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: "0"
       - name: Create CHANGELOG
         run: |
-          echo "${{ steps.increment-version.outputs.changelog }}" >> ${{ env.CHANGELOG_FILE }}
+          echo "${{ needs.increment-version.outputs.changelog }}" >> ${{ env.CHANGELOG_FILE }}
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
