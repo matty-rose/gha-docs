@@ -1,0 +1,54 @@
+version: "3"
+
+env:
+  BUILD_DIR: build/
+  GO_FILES: main.go cmd/
+  GOIMPORTS_LOCAL_PATH: -local github.com/matty-rose/gha-docs
+  SHELL: /bin/bash
+  
+
+tasks:
+  all:
+    desc: Runs all main tasks
+    cmds:
+      - task: clean
+      - task: fmt
+      - task: lint
+      - task: verify
+      - task: build
+
+  clean:
+    desc: Cleans out build artifacts.
+    cmds:
+      - rm -rf ./$BUILD_DIR
+
+  fmtcheck:
+    desc: Checks all go files for proper formatting.
+    cmds:
+      - test -z $(goimports -l $GO_FILES | tee /dev/stderr) || echo "[WARNING] Fix formatting issues with 'task fmt'"
+
+  fmt:
+    desc: Formats all go files.
+    cmds:
+      - goimports -w $GOIMPORTS_LOCAL_PATH $GO_FILES
+
+  lint:
+    desc: Lints all source code.
+    cmds:
+      - golangci-lint run ./...
+
+  verify:
+    desc: Verifies downloaded go dependencies.
+    cmds:
+      - go mod verify
+
+  run:
+    desc: Runs application.
+    cmds:
+      - go run main.go
+
+  build:
+    desc: Builds main application binary.
+    cmds:
+      - go build -o build/gha-docs -v main.go
+
