@@ -20,7 +20,7 @@ jobs:
         id: increment-version
         uses: mathieudutour/github-tag-action@v5.6
         with:
-          default_bump: patch
+          default_bump: false
           dry_run: false
           fetch_all_tags: true
           github_token: ${{ github.token }}
