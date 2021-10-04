@@ -2,10 +2,11 @@ version: "3"
 
 env:
   BUILD_DIR: build/
+  DIST_DIR: dist/
   GO_FILES: main.go cmd/
   GOIMPORTS_LOCAL_PATH: -local github.com/matty-rose/gha-docs
   SHELL: /bin/bash
-  
+
 
 tasks:
   all:
@@ -20,7 +21,7 @@ tasks:
   clean:
     desc: Cleans out build artifacts.
     cmds:
-      - rm -rf ./$BUILD_DIR
+      - rm -rf ./$BUILD_DIR ./$DIST_DIR
 
   fmtcheck:
     desc: Checks all go files for proper formatting.
@@ -51,4 +52,3 @@ tasks:
     desc: Builds main application binary.
     cmds:
       - go build -o build/gha-docs -v main.go
-
