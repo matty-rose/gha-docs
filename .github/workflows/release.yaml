@@ -1,0 +1,45 @@
+name: GHA Docs Release
+on:
+  push:
+    branches:
+      - main
+env:
+  GO_VERSION: 1.17
+  GORELEASER_VERSION: v0.180.3
+  CHANGELOG_FILE: /tmp/CHANGELOG.md
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: "0"
+      - name: Increment version
+        id: increment-version
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          default_bump: patch
+          dry_run: false
+          fetch_all_tags: true
+          github_token: ${{ github.token }}
+          release_branches: main
+          tag_prefix: v
+      - name: Fetch new remote tag
+        run: git fetch origin "refs/tags/*:refs/tags/*"
+      - name: Create CHANGELOG
+        run: |
+          echo "${{ steps.increment-version.outputs.changelog }}" >> ${{ env.CHANGELOG_FILE }}
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          distribution: goreleaser
+          version: ${{ env.GORELEASER_VERSION }}
+          args: release --rm-dist --release-notes ${{ env.CHANGELOG_FILE }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
