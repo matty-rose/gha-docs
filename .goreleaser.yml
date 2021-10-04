@@ -35,4 +35,8 @@ snapshot:
   name_template: "{{ .Tag }}-dev"
 
 changelog:
-  skip: true
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - typo
