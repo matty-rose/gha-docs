@@ -46,9 +46,16 @@ tasks:
   run:
     desc: Runs application.
     cmds:
-      - go run main.go
+      - go run main.go {{ .CLI_ARGS }}
 
   build:
     desc: Builds main application binary.
     cmds:
-      - go build -o build/gha-docs -v main.go
+      - CGO_ENABLED=0 go build -ldflags="-s -w -X github.com/matty-rose/gha-docs/internal/version.BuildVersion={{ .VERSION }}" -o build/{{ .GOOS }}-{{ .GOARCH }}/gha-docs -v main.go
+    vars:
+      VERSION:
+        sh: git log -n 1 --format=%h
+      GOOS:
+        sh: go env GOOS
+      GOARCH:
+        sh: go env GOARCH
