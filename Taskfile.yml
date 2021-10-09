@@ -43,6 +43,11 @@ tasks:
     cmds:
       - go mod verify
 
+  test:
+    desc: Runs test suite.
+    cmds:
+      - gotestsum --format testname --junitfile junit.xml
+
   run:
     desc: Runs application.
     cmds:
