@@ -23,18 +23,30 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"os"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
+// Log level flag
+var logLevel string
+
+// Config file
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "gha-docs",
 	Short: "A program to generate documentation for composite GitHub actions.",
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		if err := setUpLogs(os.Stdout, logLevel); err != nil {
+			return err
+		}
+		return nil
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -46,11 +58,13 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gha-docs.yaml)")
+	rootCmd.PersistentFlags().StringVar(
+		&logLevel,
+		"log-level",
+		logrus.WarnLevel.String(),
+		"Log level - one of debug, info, warn, error, fatal, panic",
+	)
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -75,4 +89,18 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
+}
+
+//setUpLogs sets the log output and the log level
+func setUpLogs(out io.Writer, level string) error {
+	logrus.SetOutput(out)
+
+	lvl, err := logrus.ParseLevel(level)
+	if err != nil {
+		return err
+	}
+
+	logrus.SetLevel(lvl)
+
+	return nil
 }
