@@ -40,8 +40,7 @@ func Parse(filename string) (*types.CompositeAction, error) {
 
 	data := make(map[interface{}]interface{})
 
-	err = yaml.Unmarshal(file, &data)
-	if err != nil {
+	if err := yaml.Unmarshal(file, &data); err != nil {
 		return nil, errors.Wrap(err, "failed unmarshalling yaml data")
 	}
 
@@ -49,13 +48,11 @@ func Parse(filename string) (*types.CompositeAction, error) {
 
 	parseMetadata(&action, data)
 
-	err = parseInputs(&action, data)
-	if err != nil {
+	if err := parseInputs(&action, data); err != nil {
 		return nil, err
 	}
 
-	err = parseOutputs(&action, data)
-	if err != nil {
+	if err := parseOutputs(&action, data); err != nil {
 		return nil, err
 	}
 
@@ -76,8 +73,7 @@ func parseInputs(action *types.CompositeAction, data map[interface{}]interface{}
 	for name, input := range inputs {
 		inp := types.Input{Name: name}
 
-		err := mapstructure.Decode(input, &inp)
-		if err != nil {
+		if err := mapstructure.Decode(input, &inp); err != nil {
 			return errors.Wrap(err, "failed parsing action input into struct")
 		}
 
@@ -96,8 +92,7 @@ func parseOutputs(action *types.CompositeAction, data map[interface{}]interface{
 	for name, output := range outputs {
 		out := types.Output{Name: name}
 
-		err := mapstructure.Decode(output, &out)
-		if err != nil {
+		if err := mapstructure.Decode(output, &out); err != nil {
 			return errors.Wrap(err, "failed parsing action output into struct")
 		}
 
