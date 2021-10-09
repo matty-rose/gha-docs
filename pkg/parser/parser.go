@@ -24,11 +24,12 @@ package parser
 import (
 	"io/ioutil"
 
-	"github.com/matty-rose/gha-docs/pkg/types"
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
+
+	"github.com/matty-rose/gha-docs/pkg/types"
 )
 
 func Parse(filename string) (*types.CompositeAction, error) {

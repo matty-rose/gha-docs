@@ -24,8 +24,9 @@ package parser_test
 import (
 	"testing"
 
-	"github.com/matty-rose/gha-docs/pkg/parser"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/matty-rose/gha-docs/pkg/parser"
 )
 
 func TestParseNameDescription(t *testing.T) {
