@@ -24,6 +24,6 @@ package types
 // Output represents a single output of a composite action.
 type Output struct {
 	Name        string
-	Description string
-	Value       string
+	Description string `mapstructure:"description"`
+	Value       string `mapstructure:"value"`
 }

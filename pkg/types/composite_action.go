@@ -29,3 +29,19 @@ type CompositeAction struct {
 	Outputs           []Output
 	ThirdPartyActions []ThirdPartyAction
 }
+
+func (c *CompositeAction) SetName(name string) {
+	c.Name = name
+}
+
+func (c *CompositeAction) SetDescription(description string) {
+	c.Description = description
+}
+
+func (c *CompositeAction) AddInput(input Input) {
+	c.Inputs = append(c.Inputs, input)
+}
+
+func (c *CompositeAction) AddOutput(output Output) {
+	c.Outputs = append(c.Outputs, output)
+}

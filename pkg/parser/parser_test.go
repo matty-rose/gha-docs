@@ -19,12 +19,45 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package types
+package parser_test
 
-// Input represents a single input to a composite action.
-type Input struct {
-	Name        string
-	Description string `mapstructure:"description"`
-	Required    bool   `mapstructure:"required"`
-	Default     string `mapstructure:"default"`
+import (
+	"testing"
+
+	"github.com/matty-rose/gha-docs/pkg/parser"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestParseNameDescription(t *testing.T) {
+	assertion := assert.New(t)
+
+	action, err := parser.Parse("./testdata/name_description.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assertion.Equal("test", action.Name)
+	assertion.Equal("test", action.Description)
+}
+
+func TestParseInputs(t *testing.T) {
+	assertion := assert.New(t)
+
+	action, err := parser.Parse("./testdata/inputs.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assertion.Len(action.Inputs, 2)
+}
+
+func TestParseOutputs(t *testing.T) {
+	assertion := assert.New(t)
+
+	action, err := parser.Parse("./testdata/outputs.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assertion.Len(action.Outputs, 1)
 }
