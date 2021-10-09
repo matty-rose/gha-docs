@@ -22,12 +22,12 @@ THE SOFTWARE.
 package parser
 
 import (
-	"fmt"
 	"io/ioutil"
 
 	"github.com/matty-rose/gha-docs/pkg/types"
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 )
 
@@ -69,8 +69,7 @@ func parseMetadata(action *types.CompositeAction, data map[interface{}]interface
 func parseInputs(action *types.CompositeAction, data map[interface{}]interface{}) error {
 	inputs, ok := data["inputs"].(map[string]interface{})
 	if !ok {
-		// TODO: Replace with logrus
-		fmt.Println("no inputs found")
+		logrus.Warn("no inputs found")
 	}
 
 	for name, input := range inputs {
@@ -90,8 +89,7 @@ func parseInputs(action *types.CompositeAction, data map[interface{}]interface{}
 func parseOutputs(action *types.CompositeAction, data map[interface{}]interface{}) error {
 	outputs, ok := data["outputs"].(map[string]interface{})
 	if !ok {
-		// TODO: Replace with logrus
-		fmt.Println("no outputs found")
+		logrus.Warn("no outputs found")
 	}
 
 	for name, output := range outputs {
