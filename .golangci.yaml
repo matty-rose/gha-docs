@@ -71,6 +71,9 @@ linters-settings:
     # check that each sentence starts with a capital letter
     capital: false
 
+  goimports:
+    local-prefixes: github.com/matty-rose/gha-docs
+
   govet:
     # report about shadowed variables
     check-shadowing: true
@@ -221,7 +224,7 @@ issues:
   new: false
 
   # Fix found issues (if it's supported by the linter)
-  fix: true
+  fix: false
 
 severity:
   # Default value is empty string.
