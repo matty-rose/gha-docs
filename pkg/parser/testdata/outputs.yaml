@@ -1,0 +1,7 @@
+name: "test"
+description: "test"
+
+outputs:
+  output-a:
+    description: "an output"
+    value: "b"
