@@ -64,8 +64,12 @@ const (
 	H6
 )
 
+func (mdh MarkdownHeadingLevel) Value() int {
+	return int(mdh)
+}
+
 func (m *MarkdownDocument) WriteHeading(text string, level MarkdownHeadingLevel) *MarkdownDocument {
-	heading := fmt.Sprintf("%s %s", strings.Repeat("#", int(level)), text)
+	heading := fmt.Sprintf("%s %s", strings.Repeat("#", level.Value()), text)
 	m.WriteText(heading)
 	m.WriteNewLine()
 
