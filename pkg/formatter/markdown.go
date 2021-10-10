@@ -43,12 +43,14 @@ func (m MarkdownDocument) Render() string {
 	return m.builder.String()
 }
 
-func (m *MarkdownDocument) WriteText(text string) {
+func (m *MarkdownDocument) WriteText(text string) *MarkdownDocument {
 	m.builder.WriteString(text)
+	return m
 }
 
-func (m *MarkdownDocument) WriteNewLine() {
+func (m *MarkdownDocument) WriteNewLine() *MarkdownDocument {
 	m.WriteText("\n")
+	return m
 }
 
 type MarkdownHeadingLevel int
@@ -62,8 +64,10 @@ const (
 	H6
 )
 
-func (m *MarkdownDocument) WriteHeading(text string, level MarkdownHeadingLevel) {
+func (m *MarkdownDocument) WriteHeading(text string, level MarkdownHeadingLevel) *MarkdownDocument {
 	heading := fmt.Sprintf("%s %s", strings.Repeat("#", int(level)), text)
 	m.WriteText(heading)
 	m.WriteNewLine()
+
+	return m
 }
