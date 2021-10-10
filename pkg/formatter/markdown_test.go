@@ -48,6 +48,14 @@ func TestMarkdownWriteText(t *testing.T) {
 	}
 }
 
+func TestMarkdownWriteNewLine(t *testing.T) {
+	t.Parallel()
+
+	doc := formatter.NewMarkdownDocument().WriteNewLine()
+
+	assert.Equal(t, "\n", doc.Render())
+}
+
 func TestMarkdownWriteHeading(t *testing.T) {
 	t.Parallel()
 
