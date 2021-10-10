@@ -76,3 +76,56 @@ func TestMarkdownWriteHeading(t *testing.T) {
 		assert.Equal(t, tc.expectedDoc, doc.Render())
 	}
 }
+
+func TestMarkdownWriteTable(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name        string
+		columns     []string
+		rows        [][]string
+		expectedDoc string
+		errExpected bool
+	}{
+		{"single_column_no_rows", []string{"one"}, nil, "| one |\n| --- |\n", false},
+		{"multi_column_no_rows", []string{"more", "than", "one"}, nil, "| more | than | one |\n| --- | --- | --- |\n", false},
+		{
+			"multi_column_multi_row",
+			[]string{"two", "columns"},
+			[][]string{{"and", "some"}, {"more", "rows"}},
+			"| two | columns |\n| --- | --- |\n| and | some |\n| more | rows |\n",
+			false,
+		},
+		{
+			"single_column_multi_row_error",
+			[]string{"main"},
+			[][]string{{"sometimes", "there's", "mismatches"}},
+			"",
+			true,
+		},
+		{
+			"multi_column_multi_row_error",
+			[]string{"main", "backup"},
+			[][]string{{"a", "row"}, {"some", "other", "row"}},
+			"",
+			true,
+		},
+	}
+
+	for _, tc := range testCases {
+		doc := formatter.NewMarkdownDocument()
+		_, err := doc.WriteTable(tc.columns, tc.rows)
+		errReceived := err != nil
+
+		if tc.errExpected != errReceived {
+			t.Fatalf(
+				"Test %s: Error expected <%v>, Error got <%v>",
+				tc.name,
+				tc.errExpected,
+				err,
+			)
+		}
+
+		assert.Equal(t, tc.expectedDoc, doc.Render())
+	}
+}
