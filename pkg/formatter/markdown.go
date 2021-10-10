@@ -24,6 +24,8 @@ package formatter
 import (
 	"fmt"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 type MarkdownDocument struct {
@@ -74,4 +76,49 @@ func (m *MarkdownDocument) WriteHeading(text string, level MarkdownHeadingLevel)
 	m.WriteNewLine()
 
 	return m
+}
+
+func (m *MarkdownDocument) writeTableHeader(columns []string) *MarkdownDocument {
+	m.WriteText("|")
+
+	for _, column := range columns {
+		m.WriteText(fmt.Sprintf(" %s |", column))
+	}
+
+	m.WriteNewLine()
+	m.WriteText("|")
+
+	for range columns {
+		m.WriteText(" --- |")
+	}
+
+	return m
+}
+
+func (m *MarkdownDocument) writeTableRows(rows [][]string) *MarkdownDocument {
+	for _, row := range rows {
+		m.WriteText("|")
+
+		for _, value := range row {
+			m.WriteText(fmt.Sprintf(" %s |", value))
+		}
+
+		m.WriteNewLine()
+	}
+
+	return m
+}
+
+func (m *MarkdownDocument) WriteTable(columns []string, rows [][]string) (*MarkdownDocument, error) {
+	for _, row := range rows {
+		if len(row) != len(columns) {
+			return nil, errors.New("each row must have the same number of values as the number of columns")
+		}
+	}
+
+	m.writeTableHeader(columns)
+	m.WriteNewLine()
+	m.writeTableRows(rows)
+
+	return m, nil
 }
