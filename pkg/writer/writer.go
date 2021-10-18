@@ -22,13 +22,14 @@ THE SOFTWARE.
 package writer
 
 import (
+	"os"
 	"strconv"
 
 	"github.com/matty-rose/gha-docs/pkg/formatter"
 	"github.com/matty-rose/gha-docs/pkg/types"
 )
 
-func Write(action *types.CompositeAction) string {
+func Write(action *types.CompositeAction) error {
 	doc := formatter.NewMarkdownDocument()
 
 	doc.WriteHeading(action.Name, 1)
@@ -63,5 +64,7 @@ func Write(action *types.CompositeAction) string {
 		)
 	}
 
-	return doc.Render()
+	_, err := os.Stdout.Write([]byte(doc.Render() + "\n"))
+
+	return err
 }

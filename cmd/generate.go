@@ -22,8 +22,6 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
@@ -42,9 +40,8 @@ var generateCmd = &cobra.Command{
 			return errors.Wrap(err, "couldn't parse the action file")
 		}
 
-		doc := writer.Write(action)
-		fmt.Println(doc)
-		return nil
+		err = writer.Write(action)
+		return err
 	},
 }
 
