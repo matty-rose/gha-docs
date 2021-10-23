@@ -26,6 +26,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -39,8 +40,10 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gha-docs",
-	Short: "A program to generate documentation for composite GitHub actions.",
+	Use:           "gha-docs",
+	Short:         "A program to generate documentation for composite GitHub actions.",
+	SilenceErrors: true,
+	SilenceUsage:  true,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		if err := setUpLogs(os.Stdout, logLevel); err != nil {
 			return err
@@ -91,13 +94,13 @@ func initConfig() {
 	}
 }
 
-//setUpLogs sets the log output and the log level
+// setUpLogs sets the log output and the log level
 func setUpLogs(out io.Writer, level string) error {
 	logrus.SetOutput(out)
 
 	lvl, err := logrus.ParseLevel(level)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "error parsing log level")
 	}
 
 	logrus.SetLevel(lvl)
