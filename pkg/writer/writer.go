@@ -25,12 +25,12 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/matty-rose/gha-docs/pkg/formatter"
+	"github.com/matty-rose/gha-docs/pkg/document"
 	"github.com/matty-rose/gha-docs/pkg/types"
 )
 
 func Write(action *types.CompositeAction) error {
-	doc := formatter.NewMarkdownDocument()
+	doc := document.NewMarkdownDocument()
 
 	doc.WriteHeading(action.Name, 1)
 	doc.WriteText(action.Description)

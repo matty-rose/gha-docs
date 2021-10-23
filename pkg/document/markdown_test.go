@@ -19,20 +19,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package formatter_test
+package document_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/matty-rose/gha-docs/pkg/formatter"
+	"github.com/matty-rose/gha-docs/pkg/document"
 )
 
 func TestNewMarkdownDocument(t *testing.T) {
 	t.Parallel()
 
-	doc := formatter.NewMarkdownDocument()
+	doc := document.NewMarkdownDocument()
 	assert.Equal(t, "", doc.Render())
 }
 
@@ -41,7 +41,7 @@ func TestMarkdownWriteText(t *testing.T) {
 
 	testStrings := []string{"hello", "these are the", "test strings!"}
 	for _, s := range testStrings {
-		doc := formatter.NewMarkdownDocument()
+		doc := document.NewMarkdownDocument()
 		doc.WriteText(s)
 
 		assert.Equal(t, s, doc.Render())
@@ -51,7 +51,7 @@ func TestMarkdownWriteText(t *testing.T) {
 func TestMarkdownWriteNewLine(t *testing.T) {
 	t.Parallel()
 
-	doc := formatter.NewMarkdownDocument().WriteNewLine()
+	doc := document.NewMarkdownDocument().WriteNewLine()
 
 	assert.Equal(t, "\n", doc.Render())
 }
@@ -61,16 +61,16 @@ func TestMarkdownWriteHeading(t *testing.T) {
 
 	testCases := []struct {
 		text        string
-		level       formatter.MarkdownHeadingLevel
+		level       document.MarkdownHeadingLevel
 		expectedDoc string
 	}{
-		{text: "test", level: formatter.H1, expectedDoc: "# test\n"},
-		{text: "this heading", level: formatter.H3, expectedDoc: "### this heading\n"},
-		{text: "function", level: formatter.H6, expectedDoc: "###### function\n"},
+		{text: "test", level: document.H1, expectedDoc: "# test\n"},
+		{text: "this heading", level: document.H3, expectedDoc: "### this heading\n"},
+		{text: "function", level: document.H6, expectedDoc: "###### function\n"},
 	}
 
 	for _, tc := range testCases {
-		doc := formatter.NewMarkdownDocument()
+		doc := document.NewMarkdownDocument()
 		doc.WriteHeading(tc.text, tc.level)
 
 		assert.Equal(t, tc.expectedDoc, doc.Render())
@@ -113,7 +113,7 @@ func TestMarkdownWriteTable(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		doc := formatter.NewMarkdownDocument()
+		doc := document.NewMarkdownDocument()
 		_, err := doc.WriteTable(tc.columns, tc.rows)
 		errReceived := err != nil
 
