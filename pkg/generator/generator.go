@@ -19,52 +19,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package writer
+package generator
 
-import (
-	"os"
-	"strconv"
+import "github.com/matty-rose/gha-docs/pkg/types"
 
-	"github.com/matty-rose/gha-docs/pkg/document"
-	"github.com/matty-rose/gha-docs/pkg/types"
-)
-
-func Write(action *types.CompositeAction) error {
-	doc := document.NewMarkdownDocument()
-
-	doc.WriteHeading(action.Name, 1)
-	doc.WriteText(action.Description)
-	doc.WriteNewLine()
-
-	if len(action.Inputs) != 0 {
-		var inputs [][]string
-		for _, inp := range action.Inputs {
-			inputs = append(inputs, []string{inp.Name, inp.Description, strconv.FormatBool(inp.Required), inp.Description})
-		}
-
-		doc.WriteNewLine()
-		doc.WriteHeading("Inputs", 2)
-		_, _ = doc.WriteTable(
-			[]string{"Name", "Description", "Required", "Default"},
-			inputs,
-		)
-	}
-
-	if len(action.Outputs) != 0 {
-		var outputs [][]string
-		for _, out := range action.Outputs {
-			outputs = append(outputs, []string{out.Name, out.Description, out.Value})
-		}
-
-		doc.WriteNewLine()
-		doc.WriteHeading("Outputs", 2)
-		_, _ = doc.WriteTable(
-			[]string{"Name", "Description", "Value"},
-			outputs,
-		)
-	}
-
-	_, err := os.Stdout.Write([]byte(doc.Render() + "\n"))
-
-	return err
+type Generator interface {
+	Write(action *types.CompositeAction) string
 }

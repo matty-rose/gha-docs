@@ -19,36 +19,51 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package cmd
+package generator
 
 import (
-	"os"
+	"strconv"
 
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-
-	"github.com/matty-rose/gha-docs/pkg/generator"
-	"github.com/matty-rose/gha-docs/pkg/parser"
+	"github.com/matty-rose/gha-docs/pkg/document"
+	"github.com/matty-rose/gha-docs/pkg/types"
 )
 
-// generateCmd represents the generate command
-var generateCmd = &cobra.Command{
-	Use:   "generate [PATH]",
-	Short: "Generate documentation for a composite GitHub action.",
-	Args:  cobra.ExactArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
-		action, err := parser.Parse(args[0])
-		if err != nil {
-			return errors.Wrap(err, "couldn't parse the action file")
+type MarkdownGenerator struct{}
+
+func (mdg MarkdownGenerator) Write(action *types.CompositeAction) string {
+	doc := document.NewMarkdownDocument()
+
+	doc.WriteHeading(action.Name, 1)
+	doc.WriteText(action.Description)
+	doc.WriteNewLine()
+
+	if len(action.Inputs) != 0 {
+		var inputs [][]string
+		for _, inp := range action.Inputs {
+			inputs = append(inputs, []string{inp.Name, inp.Description, strconv.FormatBool(inp.Required), inp.Description})
 		}
 
-		var gen generator.MarkdownGenerator
-		out := gen.Write(action)
-		_, err = os.Stdout.Write([]byte(out))
-		return err
-	},
-}
+		doc.WriteNewLine()
+		doc.WriteHeading("Inputs", 2)
+		_, _ = doc.WriteTable(
+			[]string{"Name", "Description", "Required", "Default"},
+			inputs,
+		)
+	}
 
-func init() {
-	rootCmd.AddCommand(generateCmd)
+	if len(action.Outputs) != 0 {
+		var outputs [][]string
+		for _, out := range action.Outputs {
+			outputs = append(outputs, []string{out.Name, out.Description, out.Value})
+		}
+
+		doc.WriteNewLine()
+		doc.WriteHeading("Outputs", 2)
+		_, _ = doc.WriteTable(
+			[]string{"Name", "Description", "Value"},
+			outputs,
+		)
+	}
+
+	return doc.Render()
 }
