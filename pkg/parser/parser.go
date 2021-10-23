@@ -67,7 +67,7 @@ func parseMetadata(action *types.CompositeAction, data map[interface{}]interface
 func parseInputs(action *types.CompositeAction, data map[interface{}]interface{}) error {
 	inputs, ok := data["inputs"].(map[string]interface{})
 	if !ok {
-		logrus.Warn("no inputs found")
+		logrus.Debug("no inputs found")
 	}
 
 	for name, input := range inputs {
@@ -86,7 +86,7 @@ func parseInputs(action *types.CompositeAction, data map[interface{}]interface{}
 func parseOutputs(action *types.CompositeAction, data map[interface{}]interface{}) error {
 	outputs, ok := data["outputs"].(map[string]interface{})
 	if !ok {
-		logrus.Warn("no outputs found")
+		logrus.Debug("no outputs found")
 	}
 
 	for name, output := range outputs {
