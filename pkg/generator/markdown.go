@@ -28,9 +28,9 @@ import (
 	"github.com/matty-rose/gha-docs/pkg/types"
 )
 
-type MarkdownGenerator struct{}
+type markdownGenerator struct{}
 
-func (mdg MarkdownGenerator) Write(action *types.CompositeAction) string {
+func (mdg markdownGenerator) Generate(action *types.CompositeAction) string {
 	doc := document.NewMarkdownDocument()
 
 	doc.WriteHeading(action.Name, 1)

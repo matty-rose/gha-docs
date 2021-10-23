@@ -21,8 +21,21 @@ THE SOFTWARE.
 */
 package generator
 
-import "github.com/matty-rose/gha-docs/pkg/types"
+import (
+	"github.com/pkg/errors"
+
+	"github.com/matty-rose/gha-docs/pkg/types"
+)
 
 type Generator interface {
-	Write(action *types.CompositeAction) string
+	Generate(action *types.CompositeAction) string
+}
+
+func New(format string) (Generator, error) {
+	switch format {
+	case "markdown":
+		return markdownGenerator{}, nil
+	}
+
+	return nil, errors.New("unsupported format")
 }
