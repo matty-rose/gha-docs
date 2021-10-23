@@ -40,7 +40,7 @@ func (mdg markdownGenerator) Generate(action *types.CompositeAction) string {
 	if len(action.Inputs) != 0 {
 		var inputs [][]string
 		for _, inp := range action.Inputs {
-			inputs = append(inputs, []string{inp.Name, inp.Description, strconv.FormatBool(inp.Required), inp.Description})
+			inputs = append(inputs, []string{inp.Name, inp.Description, strconv.FormatBool(inp.Required), inp.Default})
 		}
 
 		doc.WriteNewLine()
