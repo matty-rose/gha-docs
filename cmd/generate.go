@@ -31,6 +31,9 @@ import (
 	"github.com/matty-rose/gha-docs/pkg/parser"
 )
 
+// Format flag
+var format string
+
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate [PATH]",
@@ -42,13 +45,25 @@ var generateCmd = &cobra.Command{
 			return errors.Wrap(err, "couldn't parse the action file")
 		}
 
-		var gen generator.MarkdownGenerator
-		out := gen.Write(action)
+		var g generator.Generator
+		g, err = generator.New(format)
+		if err != nil {
+			return errors.Wrap(err, "couldn't construct the generator")
+		}
+
+		out := g.Generate(action)
 		_, err = os.Stdout.Write([]byte(out))
 		return err
 	},
 }
 
 func init() {
+	generateCmd.PersistentFlags().StringVarP(
+		&format,
+		"format",
+		"f",
+		"markdown",
+		"Format to generate documentation in - currently only markdown is supported.",
+	)
 	rootCmd.AddCommand(generateCmd)
 }
