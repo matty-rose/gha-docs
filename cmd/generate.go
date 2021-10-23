@@ -22,17 +22,19 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"os"
-
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
 	"github.com/matty-rose/gha-docs/pkg/generator"
 	"github.com/matty-rose/gha-docs/pkg/parser"
+	"github.com/matty-rose/gha-docs/pkg/writer"
 )
 
 // Format flag
 var format string
+
+// Output file flag
+var outputFile string
 
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
@@ -51,8 +53,9 @@ var generateCmd = &cobra.Command{
 			return errors.Wrap(err, "couldn't construct the generator")
 		}
 
-		out := g.Generate(action)
-		_, err = os.Stdout.Write([]byte(out))
+		content := g.Generate(action)
+
+		err = writer.Write(content, outputFile)
 		return err
 	},
 }
@@ -64,6 +67,13 @@ func init() {
 		"f",
 		"markdown",
 		"Format to generate documentation in - currently only markdown is supported.",
+	)
+	generateCmd.PersistentFlags().StringVarP(
+		&outputFile,
+		"output-file",
+		"o",
+		"",
+		"File to write generated documentation to.",
 	)
 	rootCmd.AddCommand(generateCmd)
 }
