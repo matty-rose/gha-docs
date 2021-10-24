@@ -124,6 +124,11 @@ func parseExternalActions(action *types.CompositeAction, data map[interface{}]in
 			return errors.New("step does not have a valid structure")
 		}
 
+		if _, ok := step["uses"].(string); !ok {
+			logrus.Debug("step uses key does not exist, or isn't a string, skipping")
+			continue
+		}
+
 		var ext types.ExternalAction
 
 		if stepName, ok := step["name"].(string); ok {

@@ -23,9 +23,9 @@ package types
 
 // ExternalAction represents a single external action that is used by the composite action.
 type ExternalAction struct {
-	StepName string
-	StepID   string
 	Creator  string
 	Name     string
 	Version  string
+	StepName string
+	StepID   string
 }

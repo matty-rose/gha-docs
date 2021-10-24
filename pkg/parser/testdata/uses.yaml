@@ -12,6 +12,10 @@ runs:
       uses: actions/cache@v2
       with:
         path: ./
+    - name: dummy step
+      shell: bash
+      id: dummy
+      run: echo hello
     - name: Cache test
       uses: actions/cache@v2.1.6
       with:
