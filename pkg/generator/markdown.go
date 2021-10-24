@@ -65,5 +65,19 @@ func (mdg markdownGenerator) Generate(action *types.CompositeAction) string {
 		)
 	}
 
+	if len(action.Uses) != 0 {
+		var externalActions [][]string
+		for _, act := range action.Uses {
+			externalActions = append(externalActions, []string{act.Name, act.Creator, act.Version, act.StepName, act.StepID})
+		}
+
+		doc.WriteNewLine()
+		doc.WriteHeading("External Actions", 2)
+		_, _ = doc.WriteTable(
+			[]string{"Name", "Creator", "Version", "Step Name", "Step ID"},
+			externalActions,
+		)
+	}
+
 	return doc.Render()
 }
