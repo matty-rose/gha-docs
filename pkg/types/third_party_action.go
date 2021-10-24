@@ -21,9 +21,11 @@ THE SOFTWARE.
 */
 package types
 
-// ThirdPartyAction represents a single third party action that is used within the composite action.
-type ThirdPartyAction struct {
-	Creator string
-	Name    string
-	Version string
+// ExternalAction represents a single external action that is used by the composite action.
+type ExternalAction struct {
+	StepName string
+	StepID   string
+	Creator  string
+	Name     string
+	Version  string
 }

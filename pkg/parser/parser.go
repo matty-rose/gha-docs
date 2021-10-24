@@ -23,6 +23,7 @@ package parser
 
 import (
 	"io/ioutil"
+	"regexp"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
@@ -53,6 +54,10 @@ func Parse(filename string) (*types.CompositeAction, error) {
 	}
 
 	if err := parseOutputs(&action, data); err != nil {
+		return nil, err
+	}
+
+	if err := parseExternalActions(&action, data); err != nil {
 		return nil, err
 	}
 
@@ -97,6 +102,47 @@ func parseOutputs(action *types.CompositeAction, data map[interface{}]interface{
 		}
 
 		action.AddOutput(out)
+	}
+
+	return nil
+}
+
+func parseExternalActions(action *types.CompositeAction, data map[interface{}]interface{}) error {
+	runs, ok := data["runs"].(map[string]interface{})
+	if !ok {
+		logrus.Debug("no runs found")
+	}
+
+	steps, ok := runs["steps"].([]interface{})
+	if !ok {
+		logrus.Debug("no steps found")
+	}
+
+	for _, s := range steps {
+		step, ok := s.(map[string]interface{})
+		if !ok {
+			return errors.New("step does not have a valid structure")
+		}
+
+		var ext types.ExternalAction
+
+		if stepName, ok := step["name"].(string); ok {
+			ext.StepName = stepName
+		}
+
+		if stepID, ok := step["id"].(string); ok {
+			ext.StepID = stepID
+		}
+
+		regex := *regexp.MustCompile(`(.+)\/(.+)@(.+)`)
+		res := regex.FindAllStringSubmatch(step["uses"].(string), -1)
+
+		// There should only be one match
+		ext.Creator = res[0][1]
+		ext.Name = res[0][2]
+		ext.Version = res[0][3]
+
+		action.AddExternalAction(ext)
 	}
 
 	return nil

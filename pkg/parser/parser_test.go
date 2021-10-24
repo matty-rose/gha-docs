@@ -30,35 +30,46 @@ import (
 )
 
 func TestParseNameDescription(t *testing.T) {
-	assertion := assert.New(t)
+	t.Parallel()
 
 	action, err := parser.Parse("./testdata/name_description.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	assertion.Equal("test", action.Name)
-	assertion.Equal("test", action.Description)
+	assert.Equal(t, "test", action.Name)
+	assert.Equal(t, "test", action.Description)
 }
 
 func TestParseInputs(t *testing.T) {
-	assertion := assert.New(t)
+	t.Parallel()
 
 	action, err := parser.Parse("./testdata/inputs.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	assertion.Len(action.Inputs, 2)
+	assert.Len(t, action.Inputs, 2)
 }
 
 func TestParseOutputs(t *testing.T) {
-	assertion := assert.New(t)
+	t.Parallel()
 
 	action, err := parser.Parse("./testdata/outputs.yaml")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	assertion.Len(action.Outputs, 1)
+	assert.Len(t, action.Outputs, 1)
+}
+
+func TestParseUses(t *testing.T) {
+	t.Parallel()
+
+	action, err := parser.Parse("./testdata/uses.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.Len(t, action.Uses, 3)
 }
