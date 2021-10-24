@@ -128,5 +128,9 @@ func (m MarkdownDocument) CreateLink(title, url string) string {
 }
 
 func (m MarkdownDocument) FormatCode(text string) string {
+	if text == "" {
+		return text
+	}
+
 	return fmt.Sprintf("`%s`", text)
 }

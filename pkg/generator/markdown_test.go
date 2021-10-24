@@ -203,7 +203,7 @@ also test
 | Name | Description | Required | Default |
 | --- | --- | --- | --- |
 | a | a | false | ` + "`a`" + ` |
-| b | b | true | ` + "``" + ` |
+| b | b | true |  |
 
 ## Outputs
 No outputs.
@@ -257,7 +257,7 @@ also test
 | Name | Description | Required | Default |
 | --- | --- | --- | --- |
 | a | a | false | ` + "`a`" + ` |
-| b | b | true | ` + "``" + ` |
+| b | b | true |  |
 
 ## Outputs
 | Name | Description | Value |
