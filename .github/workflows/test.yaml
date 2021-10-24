@@ -67,3 +67,9 @@ jobs:
         with:
           fail_on_failure: true
           report_paths: junit.xml
+      - name: Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./coverage.out
+          flags: unittests
+          name: gha-docs
