@@ -123,10 +123,10 @@ func (m *MarkdownDocument) WriteTable(columns []string, rows [][]string) (*Markd
 	return m, nil
 }
 
-func CreateMarkdownLink(title, url string) string {
+func (m MarkdownDocument) CreateLink(title, url string) string {
 	return fmt.Sprintf("[%s](%s)", title, url)
 }
 
-func FormatCode(text string) string {
+func (m MarkdownDocument) FormatCode(text string) string {
 	return fmt.Sprintf("`%s`", text)
 }

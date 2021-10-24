@@ -81,7 +81,7 @@ func (mdg markdownGenerator) generateInputTable(act *types.CompositeAction, doc 
 				inp.Name,
 				inp.Description,
 				strconv.FormatBool(inp.Required),
-				document.FormatCode(inp.Default),
+				doc.FormatCode(inp.Default),
 			},
 		)
 	}
@@ -94,7 +94,7 @@ func (mdg markdownGenerator) generateOutputTable(act *types.CompositeAction, doc
 
 	var rows [][]string
 	for _, out := range act.Outputs {
-		rows = append(rows, []string{out.Name, out.Description, document.FormatCode(out.Value)})
+		rows = append(rows, []string{out.Name, out.Description, doc.FormatCode(out.Value)})
 	}
 
 	_, _ = doc.WriteTable(columns, rows)
@@ -108,7 +108,7 @@ func (mdg markdownGenerator) generateExternalActionTable(act *types.CompositeAct
 		rows = append(
 			rows,
 			[]string{
-				document.CreateMarkdownLink(act.Name, act.GetLink()),
+				doc.CreateLink(act.Name, act.GetLink()),
 				act.Creator,
 				act.Version,
 				act.StepName,
