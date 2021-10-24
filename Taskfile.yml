@@ -47,7 +47,7 @@ tasks:
   test:
     desc: Runs test suite.
     cmds:
-      - gotestsum --format testname --junitfile junit.xml
+      - gotestsum --format testname --junitfile junit.xml -- ./... -covermode=atomic -coverprofile=coverage.out
 
   run:
     desc: Runs application.
