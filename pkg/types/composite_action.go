@@ -23,11 +23,11 @@ package types
 
 // CompositeAction represents a single composite action.
 type CompositeAction struct {
-	Name              string
-	Description       string
-	Inputs            []Input
-	Outputs           []Output
-	ThirdPartyActions []ThirdPartyAction
+	Name        string
+	Description string
+	Inputs      []Input
+	Outputs     []Output
+	Uses        []ExternalAction
 }
 
 func (c *CompositeAction) SetName(name string) {
@@ -44,4 +44,8 @@ func (c *CompositeAction) AddInput(input Input) {
 
 func (c *CompositeAction) AddOutput(output Output) {
 	c.Outputs = append(c.Outputs, output)
+}
+
+func (c *CompositeAction) AddExternalAction(e ExternalAction) {
+	c.Uses = append(c.Uses, e)
 }
