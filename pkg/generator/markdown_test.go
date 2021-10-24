@@ -183,6 +183,15 @@ func TestGenerateMarkdownFull(t *testing.T) {
 func getMarkdownNameDesc() string {
 	return `# test
 also test
+
+## Inputs
+No inputs.
+
+## Outputs
+No outputs.
+
+## External Actions
+No external actions.
 `
 }
 
@@ -193,8 +202,14 @@ also test
 ## Inputs
 | Name | Description | Required | Default |
 | --- | --- | --- | --- |
-| a | a | false | a |
-| b | b | true |  |
+| a | a | false | ` + "`a`" + ` |
+| b | b | true | ` + "``" + ` |
+
+## Outputs
+No outputs.
+
+## External Actions
+No external actions.
 `
 }
 
@@ -202,17 +217,29 @@ func getMarkdownOutputs() string {
 	return `# test
 also test
 
+## Inputs
+No inputs.
+
 ## Outputs
 | Name | Description | Value |
 | --- | --- | --- |
-| a | a | a |
-| b | b | b |
+| a | a | ` + "`a`" + ` |
+| b | b | ` + "`b`" + ` |
+
+## External Actions
+No external actions.
 `
 }
 
 func getMarkdownExternal() string {
 	return `# test
 also test
+
+## Inputs
+No inputs.
+
+## Outputs
+No outputs.
 
 ## External Actions
 | Name | Creator | Version | Step Name | Step ID |
@@ -229,13 +256,16 @@ also test
 ## Inputs
 | Name | Description | Required | Default |
 | --- | --- | --- | --- |
-| a | a | false | a |
-| b | b | true |  |
+| a | a | false | ` + "`a`" + ` |
+| b | b | true | ` + "``" + ` |
 
 ## Outputs
 | Name | Description | Value |
 | --- | --- | --- |
-| a | a | a |
-| b | b | b |
+| a | a | ` + "`a`" + ` |
+| b | b | ` + "`b`" + ` |
+
+## External Actions
+No external actions.
 `
 }
