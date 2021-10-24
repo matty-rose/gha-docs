@@ -151,6 +151,6 @@ func TestCreateMarkdownLink(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		assert.Equal(t, tc.expectedLink, document.CreateMarkdownLink(tc.title, tc.url))
+		assert.Equal(t, tc.expectedLink, document.NewMarkdownDocument().CreateLink(tc.title, tc.url))
 	}
 }
