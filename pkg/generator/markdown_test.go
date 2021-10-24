@@ -217,8 +217,8 @@ also test
 ## External Actions
 | Name | Creator | Version | Step Name | Step ID |
 | --- | --- | --- | --- | --- |
-| cache | actions | v2.1.6 |  |  |
-| setup-python | actions | v2 | Set up python |  |
+| [cache](https://github.com/actions/cache/tree/v2.1.6) | actions | v2.1.6 |  |  |
+| [setup-python](https://github.com/actions/setup-python/tree/v2) | actions | v2 | Set up python |  |
 `
 }
 
