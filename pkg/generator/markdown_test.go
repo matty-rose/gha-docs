@@ -106,6 +106,37 @@ func TestGenerateMarkdownOutputs(t *testing.T) {
 	assert.Equal(t, expected, content)
 }
 
+func TestGenerateMarkdownExternal(t *testing.T) {
+	g, err := generator.New("markdown")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	action := types.CompositeAction{
+		Name:        "test",
+		Description: "also test",
+		Uses: []types.ExternalAction{
+			{
+				Creator: "actions",
+				Name:    "cache",
+				Version: "v2.1.6",
+			},
+			{
+				Creator:  "actions",
+				Name:     "setup-python",
+				Version:  "v2",
+				StepName: "Set up python",
+			},
+		},
+	}
+
+	expected := getMarkdownExternal()
+
+	content := g.Generate(&action)
+
+	assert.Equal(t, expected, content)
+}
+
 func TestGenerateMarkdownFull(t *testing.T) {
 	g, err := generator.New("markdown")
 	if err != nil {
@@ -176,6 +207,18 @@ also test
 | --- | --- | --- |
 | a | a | a |
 | b | b | b |
+`
+}
+
+func getMarkdownExternal() string {
+	return `# test
+also test
+
+## External Actions
+| Name | Creator | Version | Step Name | Step ID |
+| --- | --- | --- | --- | --- |
+| cache | actions | v2.1.6 |  |  |
+| setup-python | actions | v2 | Set up python |  |
 `
 }
 
