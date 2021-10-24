@@ -129,3 +129,28 @@ func TestMarkdownWriteTable(t *testing.T) {
 		assert.Equal(t, tc.expectedDoc, doc.Render())
 	}
 }
+
+func TestCreateMarkdownLink(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		title        string
+		url          string
+		expectedLink string
+	}{
+		{
+			"title",
+			"www.google.com",
+			"[title](www.google.com)",
+		},
+		{
+			"a longer title",
+			"www.google.com/a/nested/page",
+			"[a longer title](www.google.com/a/nested/page)",
+		},
+	}
+
+	for _, tc := range testCases {
+		assert.Equal(t, tc.expectedLink, document.CreateMarkdownLink(tc.title, tc.url))
+	}
+}
