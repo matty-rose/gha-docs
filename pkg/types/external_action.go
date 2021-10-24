@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package types
 
+import "fmt"
+
 // ExternalAction represents a single external action that is used by the composite action.
 type ExternalAction struct {
 	Creator  string
@@ -28,4 +30,8 @@ type ExternalAction struct {
 	Version  string
 	StepName string
 	StepID   string
+}
+
+func (e ExternalAction) GetLink() string {
+	return fmt.Sprintf("https://github.com/%s/%s/tree/%s", e.Creator, e.Name, e.Version)
 }
