@@ -154,3 +154,29 @@ func TestCreateMarkdownLink(t *testing.T) {
 		assert.Equal(t, tc.expectedLink, document.NewMarkdownDocument().CreateLink(tc.title, tc.url))
 	}
 }
+
+func TestMarkdownFormatCode(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		text         string
+		expectedCode string
+	}{
+		{
+			"",
+			"",
+		},
+		{
+			"title",
+			"`title`",
+		},
+		{
+			"a longer title",
+			"`a longer title`",
+		},
+	}
+
+	for _, tc := range testCases {
+		assert.Equal(t, tc.expectedCode, document.NewMarkdownDocument().FormatCode(tc.text))
+	}
+}
