@@ -37,56 +37,85 @@ func (mdg markdownGenerator) Generate(action *types.CompositeAction) string {
 	doc.WriteText(action.Description)
 	doc.WriteNewLine()
 
-	if len(action.Inputs) != 0 {
-		var inputs [][]string
-		for _, inp := range action.Inputs {
-			inputs = append(inputs, []string{inp.Name, inp.Description, strconv.FormatBool(inp.Required), inp.Default})
-		}
+	doc.WriteNewLine()
+	doc.WriteHeading("Inputs", 2)
 
+	if len(action.Inputs) != 0 {
+		mdg.generateInputTable(action, doc)
+	} else {
+		doc.WriteText("No inputs.")
 		doc.WriteNewLine()
-		doc.WriteHeading("Inputs", 2)
-		_, _ = doc.WriteTable(
-			[]string{"Name", "Description", "Required", "Default"},
-			inputs,
-		)
 	}
+
+	doc.WriteNewLine()
+	doc.WriteHeading("Outputs", 2)
 
 	if len(action.Outputs) != 0 {
-		var outputs [][]string
-		for _, out := range action.Outputs {
-			outputs = append(outputs, []string{out.Name, out.Description, out.Value})
-		}
-
+		mdg.generateOutputTable(action, doc)
+	} else {
+		doc.WriteText("No outputs.")
 		doc.WriteNewLine()
-		doc.WriteHeading("Outputs", 2)
-		_, _ = doc.WriteTable(
-			[]string{"Name", "Description", "Value"},
-			outputs,
-		)
 	}
 
-	if len(action.Uses) != 0 {
-		var externalActions [][]string
-		for _, act := range action.Uses {
-			externalActions = append(
-				externalActions,
-				[]string{
-					document.CreateMarkdownLink(act.Name, act.GetLink()),
-					act.Creator,
-					act.Version,
-					act.StepName,
-					act.StepID,
-				},
-			)
-		}
+	doc.WriteNewLine()
+	doc.WriteHeading("External Actions", 2)
 
+	if len(action.Uses) != 0 {
+		mdg.generateExternalActionTable(action, doc)
+	} else {
+		doc.WriteText("No external actions.")
 		doc.WriteNewLine()
-		doc.WriteHeading("External Actions", 2)
-		_, _ = doc.WriteTable(
-			[]string{"Name", "Creator", "Version", "Step Name", "Step ID"},
-			externalActions,
-		)
 	}
 
 	return doc.Render()
+}
+
+func (mdg markdownGenerator) generateInputTable(act *types.CompositeAction, doc *document.MarkdownDocument) {
+	columns := []string{"Name", "Description", "Required", "Default"}
+
+	var rows [][]string
+	for _, inp := range act.Inputs {
+		rows = append(
+			rows,
+			[]string{
+				inp.Name,
+				inp.Description,
+				strconv.FormatBool(inp.Required),
+				document.FormatCode(inp.Default),
+			},
+		)
+	}
+
+	_, _ = doc.WriteTable(columns, rows)
+}
+
+func (mdg markdownGenerator) generateOutputTable(act *types.CompositeAction, doc *document.MarkdownDocument) {
+	columns := []string{"Name", "Description", "Value"}
+
+	var rows [][]string
+	for _, out := range act.Outputs {
+		rows = append(rows, []string{out.Name, out.Description, document.FormatCode(out.Value)})
+	}
+
+	_, _ = doc.WriteTable(columns, rows)
+}
+
+func (mdg markdownGenerator) generateExternalActionTable(act *types.CompositeAction, doc *document.MarkdownDocument) {
+	columns := []string{"Name", "Creator", "Version", "Step Name", "Step ID"}
+
+	var rows [][]string
+	for _, act := range act.Uses {
+		rows = append(
+			rows,
+			[]string{
+				document.CreateMarkdownLink(act.Name, act.GetLink()),
+				act.Creator,
+				act.Version,
+				act.StepName,
+				act.StepID,
+			},
+		)
+	}
+
+	_, _ = doc.WriteTable(columns, rows)
 }
