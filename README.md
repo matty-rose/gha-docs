@@ -7,6 +7,10 @@
 [![license](https://img.shields.io/github/license/matty-rose/gha-docs)](https://github.com/matty-rose/gha-docs/blob/main/LICENSE)
 [![release](https://img.shields.io/github/v/release/matty-rose/gha-docs)](https://github.com/matty-rose/gha-docs/releases)
 
+## What is it?
+
+A program to generate documentation for GitHub [composite actions](https://docs.github.com/en/actions/creating-actions/creating-a-composite-action).
+
 ## Installation
 
 ### Stable Release Binaries
