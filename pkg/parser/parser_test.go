@@ -74,20 +74,25 @@ func TestParseUses(t *testing.T) {
 	assert.Len(t, action.Uses, 3)
 }
 
-func TestNoFile(t *testing.T) {
+func TestInvalidFiles(t *testing.T) {
 	t.Parallel()
 
-	action, err := parser.Parse("./testdata/doesnt_exist.yaml")
+	testCases := []struct {
+		file           string
+		expectedErrMsg string
+	}{
+		{"./testdata/doesnt_exist.yaml", "couldn't read given yaml file"},
+		{"./testdata/invalid.yaml", "failed unmarshalling yaml data"},
+		{"./testdata/invalid_inputs.yaml", "failed parsing action input into struct"},
+		{"./testdata/invalid_outputs.yaml", "failed parsing action output into struct"},
+		{"./testdata/invalid_uses.yaml", "step does not have a valid structure"},
+	}
 
-	assert.Nil(t, action)
-	assert.Error(t, err)
-}
+	for _, tc := range testCases {
+		action, err := parser.Parse(tc.file)
 
-func TestInvalidYAML(t *testing.T) {
-	t.Parallel()
-
-	action, err := parser.Parse("./testdata/invalid.yaml")
-
-	assert.Nil(t, action)
-	assert.Error(t, err)
+		assert.Nil(t, action)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), tc.expectedErrMsg)
+	}
 }

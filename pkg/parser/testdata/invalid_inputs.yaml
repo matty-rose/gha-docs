@@ -1,0 +1,6 @@
+name: "test"
+description: "test"
+
+inputs:
+  input-a: 2
+  input-b: 3
