@@ -30,6 +30,16 @@ Go `1.17+` is required.
 go install github.com/matty-rose/gha-docs@v0.11.0
 ```
 
+## Usage
+
+Run `gha-docs` to display general usage.
+
+### Generating a README
+While only writing to stdout is supported:
+```bash
+gha-docs generate path/to/action.yaml > README.md
+```
+
 ## License
 
 MIT License - Copyright (c) 2021
