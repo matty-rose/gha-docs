@@ -17,6 +17,7 @@ runs:
       id: dummy
       run: echo hello
     - name: Cache test
+      id: cache-test
       uses: actions/cache@v2.1.6
       with:
         path: ./
