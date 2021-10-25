@@ -19,75 +19,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package parser_test
+package generator_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/matty-rose/gha-docs/pkg/parser"
+	"github.com/matty-rose/gha-docs/pkg/generator"
 )
 
-func TestParseNameDescription(t *testing.T) {
+func TestInvalidFormat(t *testing.T) {
 	t.Parallel()
 
-	action, err := parser.Parse("./testdata/name_description.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
+	g, err := generator.New("invalid")
 
-	assert.Equal(t, "test", action.Name)
-	assert.Equal(t, "test", action.Description)
-}
-
-func TestParseInputs(t *testing.T) {
-	t.Parallel()
-
-	action, err := parser.Parse("./testdata/inputs.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assert.Len(t, action.Inputs, 2)
-}
-
-func TestParseOutputs(t *testing.T) {
-	t.Parallel()
-
-	action, err := parser.Parse("./testdata/outputs.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assert.Len(t, action.Outputs, 1)
-}
-
-func TestParseUses(t *testing.T) {
-	t.Parallel()
-
-	action, err := parser.Parse("./testdata/uses.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assert.Len(t, action.Uses, 3)
-}
-
-func TestNoFile(t *testing.T) {
-	t.Parallel()
-
-	action, err := parser.Parse("./testdata/doesnt_exist.yaml")
-
-	assert.Nil(t, action)
-	assert.Error(t, err)
-}
-
-func TestInvalidYAML(t *testing.T) {
-	t.Parallel()
-
-	action, err := parser.Parse("./testdata/invalid.yaml")
-
-	assert.Nil(t, action)
+	assert.Nil(t, g)
 	assert.Error(t, err)
 }
