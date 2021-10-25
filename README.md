@@ -38,10 +38,16 @@ go install github.com/matty-rose/gha-docs@v0.11.0
 
 Run `gha-docs` to display general usage.
 
-### Generating a README
-While only writing to stdout is supported:
+To output to stdout:
 ```bash
-gha-docs generate path/to/action.yaml > README.md
+gha-docs generate path/to/action.yaml
+```
+
+### Generating a README
+
+This will overwrite any existing content in `README.md`. Support for injecting the generated documentation between markers is coming soon!
+```bash
+gha-docs generate --output-file README.md path/to/action.yaml
 ```
 
 ## License
