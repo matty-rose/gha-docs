@@ -1,0 +1,8 @@
+name: "test"
+description: "test"
+
+runs:
+  using: "composite"
+  steps:
+    - 2
+    - ["test", "test2"]
