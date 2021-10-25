@@ -17,7 +17,7 @@ A program to generate documentation for GitHub [composite actions](https://docs.
 Substitute `darwin` for `linux` if installing on MacOS.
 
 ```bash
-export GHA_DOCS_VERSION=v0.11.0
+export GHA_DOCS_VERSION=v0.12.0
 export GHA_DOCS_OS=linux
 export GHA_DOCS_ARCH=amd64
 
@@ -31,7 +31,7 @@ chmod +x gha-docs && mv gha-docs /usr/local/bin
 Go `1.17+` is required.
 
 ```bash
-go install github.com/matty-rose/gha-docs@v0.11.0
+go install github.com/matty-rose/gha-docs@v0.12.0
 ```
 
 ## Usage
