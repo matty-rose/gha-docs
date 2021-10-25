@@ -22,6 +22,7 @@ THE SOFTWARE.
 package writer
 
 import (
+	"fmt"
 	"io"
 	"os"
 
@@ -34,14 +35,40 @@ func (sw stdoutWriter) Write(content []byte) (int, error) {
 	return os.Stdout.Write(content)
 }
 
+type fileWriter struct {
+	file string
+}
+
+func (fw fileWriter) Write(content []byte) (n int, err error) {
+	f, err := os.OpenFile(fw.file, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		return 0, errors.Wrap(err, fmt.Sprintf("couldn't open file: %s", fw.file))
+	}
+
+	defer func() {
+		cerr := f.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+
+	n, err = f.Write(content)
+	if err != nil {
+		return 0, errors.Wrap(err, fmt.Sprintf("couldn't write to file: %s", fw.file))
+	}
+
+	// Uses named return values
+	return
+}
+
 func Write(content string, outputFile string) error {
 	var w io.Writer
 
 	if outputFile != "" {
-		return errors.New("writing to file not implemented yet")
+		w = fileWriter{outputFile}
+	} else {
+		w = stdoutWriter{}
 	}
-
-	w = stdoutWriter{}
 
 	_, err := io.WriteString(w, content)
 
