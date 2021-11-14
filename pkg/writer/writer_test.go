@@ -23,6 +23,7 @@ package writer_test
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"testing"
@@ -86,5 +87,57 @@ func TestFileWriter(t *testing.T) {
 		}
 
 		assert.Equal(t, tc, string(got))
+	}
+}
+
+func TestFileWriterInject(t *testing.T) {
+	t.Parallel()
+
+	content := "dummy\n"
+
+	testCases := []struct {
+		outputFile      string
+		expectedContent string
+	}{
+		{"./testdata/non_existent.md", "dummy\n"},
+		{"./testdata/empty.md", "dummy\n"},
+		{"./testdata/only_markers.md", fmt.Sprintf("%s\ndummy\n%s\n", writer.BeginInjection, writer.EndInjection)},
+		{"./testdata/existing_and_markers.md",
+			fmt.Sprintf(
+				"something already existing\n%s\ndummy\n%s\nsomething else not overwritten\n",
+				writer.BeginInjection,
+				writer.EndInjection,
+			),
+		},
+	}
+
+	for _, tc := range testCases {
+		writer.Write(writer.WriteInputs{Content: content, OutputFile: tc.outputFile, Inject: true})
+
+		got, err := os.ReadFile(tc.outputFile)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, tc.expectedContent, string(got))
+	}
+}
+
+func TestFileWriterInjectInvalid(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		outputFile     string
+		expectedErrMsg string
+	}{
+		{"./testdata/no_begin_marker.md", "missing begin injection marker"},
+		{"./testdata/no_end_marker.md", "missing end injection marker"},
+		{"./testdata/end_before_begin.md", "end injection marker is before begin"},
+	}
+
+	for _, tc := range testCases {
+		err := writer.Write(writer.WriteInputs{Content: "dummy", OutputFile: tc.outputFile, Inject: true})
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), tc.expectedErrMsg)
 	}
 }
