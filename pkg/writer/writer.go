@@ -25,8 +25,14 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/pkg/errors"
+)
+
+const (
+	BeginInjection string = "<!-- BEGIN GHA DOCS -->"
+	EndInjection   string = "<!-- END GHA DOCS -->"
 )
 
 type stdoutWriter struct{}
@@ -36,41 +42,70 @@ func (sw stdoutWriter) Write(content []byte) (int, error) {
 }
 
 type fileWriter struct {
-	file string
+	file   string
+	inject bool
 }
 
-func (fw fileWriter) Write(content []byte) (n int, err error) {
-	f, err := os.OpenFile(fw.file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
-	if err != nil {
-		return 0, errors.Wrap(err, fmt.Sprintf("couldn't open file: %s", fw.file))
+func (fw fileWriter) Write(content []byte) (int, error) {
+	if !fw.inject {
+		return fw.writeFile(content)
 	}
 
-	defer func() {
-		cerr := f.Close()
-		if err == nil {
-			err = cerr
-		}
-	}()
+	existingFileContent, err := os.ReadFile(fw.file)
+	if err != nil || len(existingFileContent) == 0 {
+		// Even if inject flag is passed, if file doesn't exist OR is empty, then write as per normal.
+		return fw.writeFile(content)
+	}
 
-	n, err = f.Write(content)
+	return fw.injectContent(string(existingFileContent), string(content))
+}
+
+func (fw fileWriter) injectContent(existing, newContent string) (int, error) {
+	beginIdx := strings.Index(existing, BeginInjection)
+	endIdx := strings.Index(existing, EndInjection)
+
+	if beginIdx == -1 {
+		return 0, errors.New(fmt.Sprintf("missing begin injection marker: %s", BeginInjection))
+	}
+
+	if endIdx == -1 {
+		return 0, errors.New(fmt.Sprintf("missing end injection marker: %s", EndInjection))
+	}
+
+	if endIdx < beginIdx {
+		return 0, errors.New("end injection marker is before begin injection marker")
+	}
+
+	injectedContent := existing[:beginIdx+len(BeginInjection)] + "\n" + newContent + existing[endIdx:]
+
+	return fw.writeFile([]byte(injectedContent))
+}
+
+func (fw fileWriter) writeFile(content []byte) (int, error) {
+	err := os.WriteFile(fw.file, []byte(content), 0644)
 	if err != nil {
 		return 0, errors.Wrap(err, fmt.Sprintf("couldn't write to file: %s", fw.file))
 	}
 
-	// Uses named return values
-	return
+	return len(content), err
 }
 
-func Write(content string, outputFile string) error {
+type WriteInputs struct {
+	Content    string
+	OutputFile string
+	Inject     bool
+}
+
+func Write(inputs WriteInputs) error {
 	var w io.Writer
 
-	if outputFile != "" {
-		w = fileWriter{outputFile}
+	if inputs.OutputFile != "" {
+		w = fileWriter{inputs.OutputFile, inputs.Inject}
 	} else {
 		w = stdoutWriter{}
 	}
 
-	_, err := io.WriteString(w, content)
+	_, err := io.WriteString(w, inputs.Content)
 
 	return err
 }
