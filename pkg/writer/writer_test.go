@@ -57,7 +57,7 @@ func TestStdoutWriter(t *testing.T) {
 			outC <- buf.String()
 		}()
 
-		writer.Write(tc, "")
+		writer.Write(writer.WriteInputs{Content: tc, OutputFile: "", Inject: false})
 
 		// back to normal state
 		w.Close()
@@ -78,7 +78,7 @@ func TestFileWriter(t *testing.T) {
     shenanigans`}
 
 	for _, tc := range testCases {
-		writer.Write(tc, testFile)
+		writer.Write(writer.WriteInputs{Content: tc, OutputFile: testFile, Inject: false})
 
 		got, err := os.ReadFile(testFile)
 		if err != nil {

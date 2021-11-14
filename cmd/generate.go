@@ -36,6 +36,9 @@ var format string
 // Output file flag
 var outputFile string
 
+// Inject flag
+var inject bool
+
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate [PATH]",
@@ -55,7 +58,11 @@ var generateCmd = &cobra.Command{
 
 		content := g.Generate(action)
 
-		err = writer.Write(content, outputFile)
+		err = writer.Write(writer.WriteInputs{
+			Content:    content,
+			OutputFile: outputFile,
+			Inject:     inject,
+		})
 		return err
 	},
 }
@@ -74,6 +81,13 @@ func init() {
 		"o",
 		"",
 		"File to write generated documentation to.",
+	)
+	generateCmd.PersistentFlags().BoolVarP(
+		&inject,
+		"inject",
+		"i",
+		false,
+		"Set flag to inject generated documentation between markers. Ignored if not writing to a file. Defaults to false.",
 	)
 	rootCmd.AddCommand(generateCmd)
 }
