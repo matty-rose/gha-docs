@@ -40,7 +40,7 @@ type fileWriter struct {
 }
 
 func (fw fileWriter) Write(content []byte) (n int, err error) {
-	f, err := os.OpenFile(fw.file, os.O_RDWR|os.O_CREATE, 0644)
+	f, err := os.OpenFile(fw.file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return 0, errors.Wrap(err, fmt.Sprintf("couldn't open file: %s", fw.file))
 	}
