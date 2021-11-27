@@ -124,6 +124,9 @@ func (mdg markdownGenerator) generateExternalActionTable(act *types.CompositeAct
 func (mdg markdownGenerator) generateExampleUsageBlock(act *types.CompositeAction, doc *document.MarkdownDocument) {
 	doc.WriteCodeBlockMarkerWithFormat("yaml")
 	doc.WriteTextLn(fmt.Sprintf("- name: %s", act.Name))
+	// TODO: Some way of getting actual owner/repo name here?
+	// TODO: Add config option for action location - remote or local, and for local change
+	//       `uses` to be a path
 	doc.WriteTextLn("  uses: owner/repo@latest")
 
 	if len(act.Inputs) == 0 {
