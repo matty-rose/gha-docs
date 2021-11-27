@@ -22,6 +22,7 @@ THE SOFTWARE.
 package generator_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -30,13 +31,12 @@ import (
 	"github.com/matty-rose/gha-docs/pkg/types"
 )
 
-func newMarkdownConfig() generator.Config {
-	mode := generator.Remote
+func newMarkdownConfig(mode generator.UsageMode) generator.Config {
 	return generator.Config{Format: "markdown", ExampleUsageMode: &mode}
 }
 
 func TestGenerateMarkdownNameDescription(t *testing.T) {
-	g, err := generator.New(newMarkdownConfig())
+	g, err := generator.New(newMarkdownConfig(generator.Remote))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,8 +50,8 @@ func TestGenerateMarkdownNameDescription(t *testing.T) {
 	assert.Equal(t, expected, content)
 }
 
-func TestGenerateMarkdownInputs(t *testing.T) {
-	g, err := generator.New(newMarkdownConfig())
+func TestGenerateMarkdownInputsRemote(t *testing.T) {
+	g, err := generator.New(newMarkdownConfig(generator.Remote))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -74,7 +74,38 @@ func TestGenerateMarkdownInputs(t *testing.T) {
 		},
 	}
 
-	expected := getMarkdownInputs()
+	expected := getMarkdownInputs(generator.Remote)
+
+	content := g.Generate(&action)
+
+	assert.Equal(t, expected, content)
+}
+
+func TestGenerateMarkdownInputsLocal(t *testing.T) {
+	g, err := generator.New(newMarkdownConfig(generator.Local))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	action := types.CompositeAction{
+		Name:        "test",
+		Description: "also test",
+		Inputs: []types.Input{
+			{
+				Name:        "a",
+				Description: "a",
+				Required:    false,
+				Default:     "a",
+			},
+			{
+				Name:        "b",
+				Description: "b",
+				Required:    true,
+			},
+		},
+	}
+
+	expected := getMarkdownInputs(generator.Local)
 
 	content := g.Generate(&action)
 
@@ -82,7 +113,7 @@ func TestGenerateMarkdownInputs(t *testing.T) {
 }
 
 func TestGenerateMarkdownOutputs(t *testing.T) {
-	g, err := generator.New(newMarkdownConfig())
+	g, err := generator.New(newMarkdownConfig(generator.Remote))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,7 +143,7 @@ func TestGenerateMarkdownOutputs(t *testing.T) {
 }
 
 func TestGenerateMarkdownExternal(t *testing.T) {
-	g, err := generator.New(newMarkdownConfig())
+	g, err := generator.New(newMarkdownConfig(generator.Remote))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -143,7 +174,7 @@ func TestGenerateMarkdownExternal(t *testing.T) {
 }
 
 func TestGenerateMarkdownFull(t *testing.T) {
-	g, err := generator.New(newMarkdownConfig())
+	g, err := generator.New(newMarkdownConfig(generator.Remote))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -185,6 +216,17 @@ func TestGenerateMarkdownFull(t *testing.T) {
 	assert.Equal(t, expected, content)
 }
 
+func getUsageModeOutputString(mode generator.UsageMode) string {
+	switch mode {
+	case generator.Remote:
+		return "owner/repo@latest"
+	case generator.Local:
+		return "./path/to/action.yml"
+	default:
+		return "owner/repo@latest"
+	}
+}
+
 func getMarkdownNameDesc() string {
 	return `# test
 also test
@@ -206,14 +248,14 @@ No external actions.
 `
 }
 
-func getMarkdownInputs() string {
-	return `# test
+func getMarkdownInputs(mode generator.UsageMode) string {
+	return fmt.Sprintf(`# test
 also test
 
 ## Inputs
 | Name | Description | Required | Default |
 | --- | --- | --- | --- |
-| a | a | false | ` + "`a`" + ` |
+| a | a | false | `+"`a`"+` |
 | b | b | true |  |
 
 ## Outputs
@@ -223,17 +265,17 @@ No outputs.
 No external actions.
 
 ## Example Usage
-` + "```yaml" + `
+`+"```yaml"+`
 - name: test
-  uses: owner/repo@latest
+  uses: %s
   with:
     # a
     a:
 
     # b
     b:
-` + "```" + `
-`
+`+"```"+`
+`, getUsageModeOutputString(mode))
 }
 
 func getMarkdownOutputs() string {
