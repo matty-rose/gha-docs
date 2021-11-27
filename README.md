@@ -17,7 +17,7 @@ A program to generate documentation for GitHub [composite actions](https://docs.
 Substitute `darwin` for `linux` if installing on MacOS.
 
 ```bash
-export GHA_DOCS_VERSION=v0.14.0
+export GHA_DOCS_VERSION=v0.15.0
 export GHA_DOCS_OS=linux
 export GHA_DOCS_ARCH=amd64
 
@@ -31,7 +31,7 @@ chmod +x gha-docs && mv gha-docs /usr/local/bin
 Go `1.17+` is required.
 
 ```bash
-go install github.com/matty-rose/gha-docs@v0.14.0
+go install github.com/matty-rose/gha-docs@v0.15.0
 ```
 
 ## Usage
@@ -60,6 +60,10 @@ Then use the `-i/--inject` flag to inject the documentation into the file specif
 ```bash
 gha-docs generate -i -o README.md path/to/action.yaml
 ```
+
+## Future Improvements
+- [ ] Add CI workflow to auto-commit find/replace version updates to README on release
+- [ ] Parse config from `.gha-docs.yml`
 
 ## License
 
