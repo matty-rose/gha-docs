@@ -55,6 +55,13 @@ func (m *MarkdownDocument) WriteNewLine() *MarkdownDocument {
 	return m
 }
 
+func (m *MarkdownDocument) WriteTextLn(text string) *MarkdownDocument {
+	m.WriteText(text)
+	m.WriteNewLine()
+
+	return m
+}
+
 type MarkdownHeadingLevel int
 
 const (
