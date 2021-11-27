@@ -30,8 +30,12 @@ import (
 	"github.com/matty-rose/gha-docs/pkg/types"
 )
 
+func newMarkdownConfig() generator.Config {
+	return generator.Config{Format: "markdown"}
+}
+
 func TestGenerateMarkdownNameDescription(t *testing.T) {
-	g, err := generator.New("markdown")
+	g, err := generator.New(newMarkdownConfig())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,7 +50,7 @@ func TestGenerateMarkdownNameDescription(t *testing.T) {
 }
 
 func TestGenerateMarkdownInputs(t *testing.T) {
-	g, err := generator.New("markdown")
+	g, err := generator.New(newMarkdownConfig())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,7 +81,7 @@ func TestGenerateMarkdownInputs(t *testing.T) {
 }
 
 func TestGenerateMarkdownOutputs(t *testing.T) {
-	g, err := generator.New("markdown")
+	g, err := generator.New(newMarkdownConfig())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -107,7 +111,7 @@ func TestGenerateMarkdownOutputs(t *testing.T) {
 }
 
 func TestGenerateMarkdownExternal(t *testing.T) {
-	g, err := generator.New("markdown")
+	g, err := generator.New(newMarkdownConfig())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -138,7 +142,7 @@ func TestGenerateMarkdownExternal(t *testing.T) {
 }
 
 func TestGenerateMarkdownFull(t *testing.T) {
-	g, err := generator.New("markdown")
+	g, err := generator.New(newMarkdownConfig())
 	if err != nil {
 		t.Fatal(err)
 	}

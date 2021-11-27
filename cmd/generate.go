@@ -24,6 +24,7 @@ package cmd
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/thediveo/enumflag"
 
 	"github.com/matty-rose/gha-docs/pkg/generator"
 	"github.com/matty-rose/gha-docs/pkg/parser"
@@ -39,6 +40,9 @@ var outputFile string
 // Inject flag
 var inject bool
 
+// Usage mode flag
+var usageMode generator.UsageMode = generator.Remote
+
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate [PATH]",
@@ -51,7 +55,10 @@ var generateCmd = &cobra.Command{
 		}
 
 		var g generator.Generator
-		g, err = generator.New(format)
+		g, err = generator.New(generator.Config{
+			Format:           format,
+			ExampleUsageMode: &usageMode,
+		})
 		if err != nil {
 			return errors.Wrap(err, "couldn't construct the generator")
 		}
@@ -88,6 +95,12 @@ func init() {
 		"i",
 		false,
 		"Set flag to inject generated documentation between markers. Ignored if not writing to a file. Defaults to false.",
+	)
+	generateCmd.PersistentFlags().VarP(
+		enumflag.New(&usageMode, "mode", generator.UsageModeIDs, enumflag.EnumCaseInsensitive),
+		"usage-mode",
+		"u",
+		"Sets the usage mode when generating example usage block. Must be one of 'remote' or 'local'.",
 	)
 	rootCmd.AddCommand(generateCmd)
 }
