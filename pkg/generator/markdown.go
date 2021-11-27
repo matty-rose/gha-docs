@@ -22,6 +22,7 @@ THE SOFTWARE.
 package generator
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/matty-rose/gha-docs/pkg/document"
@@ -34,8 +35,7 @@ func (mdg markdownGenerator) Generate(action *types.CompositeAction) string {
 	doc := document.NewMarkdownDocument()
 
 	doc.WriteHeading(action.Name, 1)
-	doc.WriteText(action.Description)
-	doc.WriteNewLine()
+	doc.WriteTextLn(action.Description)
 
 	doc.WriteNewLine()
 	doc.WriteHeading("Inputs", 2)
@@ -43,8 +43,7 @@ func (mdg markdownGenerator) Generate(action *types.CompositeAction) string {
 	if len(action.Inputs) != 0 {
 		mdg.generateInputTable(action, doc)
 	} else {
-		doc.WriteText("No inputs.")
-		doc.WriteNewLine()
+		doc.WriteTextLn("No inputs.")
 	}
 
 	doc.WriteNewLine()
@@ -53,8 +52,7 @@ func (mdg markdownGenerator) Generate(action *types.CompositeAction) string {
 	if len(action.Outputs) != 0 {
 		mdg.generateOutputTable(action, doc)
 	} else {
-		doc.WriteText("No outputs.")
-		doc.WriteNewLine()
+		doc.WriteTextLn("No outputs.")
 	}
 
 	doc.WriteNewLine()
@@ -63,9 +61,12 @@ func (mdg markdownGenerator) Generate(action *types.CompositeAction) string {
 	if len(action.Uses) != 0 {
 		mdg.generateExternalActionTable(action, doc)
 	} else {
-		doc.WriteText("No external actions.")
-		doc.WriteNewLine()
+		doc.WriteTextLn("No external actions.")
 	}
+
+	doc.WriteNewLine()
+	doc.WriteHeading("Example Usage", 2)
+	mdg.generateExampleUsageBlock(action, doc)
 
 	return doc.Render()
 }
@@ -118,4 +119,28 @@ func (mdg markdownGenerator) generateExternalActionTable(act *types.CompositeAct
 	}
 
 	_, _ = doc.WriteTable(columns, rows)
+}
+
+func (mdg markdownGenerator) generateExampleUsageBlock(act *types.CompositeAction, doc *document.MarkdownDocument) {
+	doc.WriteCodeBlockMarkerWithFormat("yaml")
+	doc.WriteTextLn(fmt.Sprintf("- name: %s", act.Name))
+	doc.WriteTextLn("  uses: owner/repo@ref")
+
+	if len(act.Inputs) == 0 {
+		doc.WriteCodeBlockMarker()
+		return
+	}
+
+	doc.WriteTextLn("  with:")
+
+	for idx, inp := range act.Inputs {
+		doc.WriteTextLn(fmt.Sprintf("    # %s", inp.Description))
+		doc.WriteTextLn(fmt.Sprintf("    %s:", inp.Name))
+
+		if idx != len(act.Inputs)-1 {
+			doc.WriteNewLine()
+		}
+	}
+
+	doc.WriteCodeBlockMarker()
 }
