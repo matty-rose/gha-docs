@@ -21,21 +21,22 @@ THE SOFTWARE.
 */
 package generator
 
-import (
-	"github.com/pkg/errors"
+import "github.com/thediveo/enumflag"
 
-	"github.com/matty-rose/gha-docs/pkg/types"
+type UsageMode enumflag.Flag
+
+const (
+	Remote UsageMode = iota
+	Local
 )
 
-type Generator interface {
-	Generate(action *types.CompositeAction) string
+var UsageModeIDs = map[UsageMode][]string{
+	Remote: {"remote"},
+	Local:  {"local"},
 }
 
-func New(config Config) (Generator, error) {
-	switch config.Format {
-	case "markdown":
-		return markdownGenerator{config}, nil
-	}
+type Config struct {
+	Format string
 
-	return nil, errors.New("unsupported format")
+	ExampleUsageMode *UsageMode
 }
