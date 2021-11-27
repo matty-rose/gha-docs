@@ -53,7 +53,7 @@ type Config struct {
 func New(config Config) (Generator, error) {
 	switch config.Format {
 	case "markdown":
-		return markdownGenerator{}, nil
+		return markdownGenerator{config}, nil
 	}
 
 	return nil, errors.New("unsupported format")

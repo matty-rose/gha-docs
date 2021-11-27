@@ -31,7 +31,8 @@ import (
 )
 
 func newMarkdownConfig() generator.Config {
-	return generator.Config{Format: "markdown"}
+	mode := generator.Remote
+	return generator.Config{Format: "markdown", ExampleUsageMode: &mode}
 }
 
 func TestGenerateMarkdownNameDescription(t *testing.T) {
