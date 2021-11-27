@@ -22,6 +22,7 @@ THE SOFTWARE.
 package document_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -54,6 +55,18 @@ func TestMarkdownWriteNewLine(t *testing.T) {
 	doc := document.NewMarkdownDocument().WriteNewLine()
 
 	assert.Equal(t, "\n", doc.Render())
+}
+
+func TestMarkdownWriteTextLn(t *testing.T) {
+	t.Parallel()
+
+	testStrings := []string{"hello", "these are the", "test strings!"}
+	for _, s := range testStrings {
+		doc := document.NewMarkdownDocument()
+		doc.WriteTextLn(s)
+
+		assert.Equal(t, fmt.Sprintf("%s\n", s), doc.Render())
+	}
 }
 
 func TestMarkdownWriteHeading(t *testing.T) {
