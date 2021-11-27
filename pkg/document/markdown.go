@@ -134,3 +134,19 @@ func (m MarkdownDocument) FormatCode(text string) string {
 
 	return fmt.Sprintf("`%s`", text)
 }
+
+const CodeBlockMarker string = "```"
+
+func (m *MarkdownDocument) WriteCodeBlockMarker() *MarkdownDocument {
+	m.WriteText(CodeBlockMarker)
+	m.WriteNewLine()
+
+	return m
+}
+
+func (m *MarkdownDocument) WriteCodeBlockMarkerWithFormat(format string) *MarkdownDocument {
+	m.WriteText(fmt.Sprintf("%s%s", CodeBlockMarker, format))
+	m.WriteNewLine()
+
+	return m
+}
