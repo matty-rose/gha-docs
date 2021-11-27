@@ -32,8 +32,7 @@ import (
 func TestInvalidFormat(t *testing.T) {
 	t.Parallel()
 
-	var mode generator.UsageMode = generator.Remote
-
+	mode := generator.Remote
 	config := generator.Config{Format: "invalid", ExampleUsageMode: &mode}
 	g, err := generator.New(config)
 
