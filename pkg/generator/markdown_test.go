@@ -196,7 +196,7 @@ No external actions.
 ## Example Usage
 ` + "```yaml" + `
 - name: test
-  uses: owner/repo@ref
+  uses: owner/repo@latest
 ` + "```" + `
 `
 }
@@ -220,7 +220,7 @@ No external actions.
 ## Example Usage
 ` + "```yaml" + `
 - name: test
-  uses: owner/repo@ref
+  uses: owner/repo@latest
   with:
     # a
     a:
@@ -250,7 +250,7 @@ No external actions.
 ## Example Usage
 ` + "```yaml" + `
 - name: test
-  uses: owner/repo@ref
+  uses: owner/repo@latest
 ` + "```" + `
 `
 }
@@ -274,7 +274,7 @@ No outputs.
 ## Example Usage
 ` + "```yaml" + `
 - name: test
-  uses: owner/repo@ref
+  uses: owner/repo@latest
 ` + "```" + `
 `
 }
@@ -301,7 +301,7 @@ No external actions.
 ## Example Usage
 ` + "```yaml" + `
 - name: test
-  uses: owner/repo@ref
+  uses: owner/repo@latest
   with:
     # a
     a:
