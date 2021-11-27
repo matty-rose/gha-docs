@@ -32,7 +32,7 @@ import (
 func TestInvalidFormat(t *testing.T) {
 	t.Parallel()
 
-	g, err := generator.New("invalid")
+	g, err := generator.New(generator.Config{Format: "invalid"})
 
 	assert.Nil(t, g)
 	assert.Error(t, err)

@@ -23,6 +23,7 @@ package generator
 
 import (
 	"github.com/pkg/errors"
+	"github.com/thediveo/enumflag"
 
 	"github.com/matty-rose/gha-docs/pkg/types"
 )
@@ -31,8 +32,26 @@ type Generator interface {
 	Generate(action *types.CompositeAction) string
 }
 
-func New(format string) (Generator, error) {
-	switch format {
+type UsageMode enumflag.Flag
+
+const (
+	Remote UsageMode = iota
+	Local
+)
+
+var UsageModeIDs = map[UsageMode][]string{
+	Remote: {"remote"},
+	Local:  {"local"},
+}
+
+type Config struct {
+	Format string
+
+	ExampleUsageMode *UsageMode
+}
+
+func New(config Config) (Generator, error) {
+	switch config.Format {
 	case "markdown":
 		return markdownGenerator{}, nil
 	}
