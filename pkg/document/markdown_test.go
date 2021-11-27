@@ -180,3 +180,39 @@ func TestMarkdownFormatCode(t *testing.T) {
 		assert.Equal(t, tc.expectedCode, document.NewMarkdownDocument().FormatCode(tc.text))
 	}
 }
+
+func TestMarkdownWriteCodeBlockMarker(t *testing.T) {
+	t.Parallel()
+
+	doc := document.NewMarkdownDocument()
+	doc.WriteCodeBlockMarker()
+	assert.Equal(t, "```\n", doc.Render())
+}
+
+func TestMarkdownWriteCodeBlockMarkerFormat(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		format   string
+		expected string
+	}{
+		{
+			"yaml",
+			"```yaml\n",
+		},
+		{
+			"python",
+			"```python\n",
+		},
+		{
+			"sh",
+			"```sh\n",
+		},
+	}
+
+	for _, tc := range testCases {
+		doc := document.NewMarkdownDocument()
+		doc.WriteCodeBlockMarkerWithFormat(tc.format)
+		assert.Equal(t, tc.expected, doc.Render())
+	}
+}
