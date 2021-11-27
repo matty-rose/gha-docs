@@ -192,6 +192,12 @@ No outputs.
 
 ## External Actions
 No external actions.
+
+## Example Usage
+` + "```yaml" + `
+- name: test
+  uses: owner/repo@ref
+` + "```" + `
 `
 }
 
@@ -210,6 +216,18 @@ No outputs.
 
 ## External Actions
 No external actions.
+
+## Example Usage
+` + "```yaml" + `
+- name: test
+  uses: owner/repo@ref
+  with:
+    # a
+    a:
+
+    # b
+    b:
+` + "```" + `
 `
 }
 
@@ -228,6 +246,12 @@ No inputs.
 
 ## External Actions
 No external actions.
+
+## Example Usage
+` + "```yaml" + `
+- name: test
+  uses: owner/repo@ref
+` + "```" + `
 `
 }
 
@@ -246,6 +270,12 @@ No outputs.
 | --- | --- | --- | --- | --- |
 | [cache](https://github.com/actions/cache/tree/v2.1.6) | actions | v2.1.6 |  |  |
 | [setup-python](https://github.com/actions/setup-python/tree/v2) | actions | v2 | Set up python |  |
+
+## Example Usage
+` + "```yaml" + `
+- name: test
+  uses: owner/repo@ref
+` + "```" + `
 `
 }
 
@@ -267,5 +297,17 @@ also test
 
 ## External Actions
 No external actions.
+
+## Example Usage
+` + "```yaml" + `
+- name: test
+  uses: owner/repo@ref
+  with:
+    # a
+    a:
+
+    # b
+    b:
+` + "```" + `
 `
 }
