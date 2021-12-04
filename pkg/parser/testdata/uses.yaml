@@ -21,3 +21,6 @@ runs:
       uses: actions/cache@v2.1.6
       with:
         path: ./
+    - name: Local
+      id: cache-test
+      uses: ./.github/actions/test-action-dir

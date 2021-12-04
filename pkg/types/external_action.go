@@ -25,13 +25,22 @@ import "fmt"
 
 // ExternalAction represents a single external action that is used by the composite action.
 type ExternalAction struct {
-	Creator  string
-	Name     string
-	Version  string
-	StepName string
-	StepID   string
+	Creator   string
+	Name      string
+	Version   string
+	StepName  string
+	StepID    string
+	Local     bool
+	LocalPath *string
 }
 
 func (e ExternalAction) GetLink() string {
-	return fmt.Sprintf("https://github.com/%s/%s/tree/%s", e.Creator, e.Name, e.Version)
+	switch e.Local {
+	case true:
+		return *e.LocalPath
+	case false:
+		return fmt.Sprintf("https://github.com/%s/%s/tree/%s", e.Creator, e.Name, e.Version)
+	default:
+		return ""
+	}
 }
