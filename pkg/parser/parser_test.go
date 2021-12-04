@@ -71,7 +71,7 @@ func TestParseUses(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	assert.Len(t, action.Uses, 3)
+	assert.Len(t, action.Uses, 4)
 }
 
 func TestInvalidFiles(t *testing.T) {

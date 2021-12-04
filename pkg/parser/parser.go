@@ -23,6 +23,7 @@ package parser
 
 import (
 	"io/ioutil"
+	"path/filepath"
 	"regexp"
 
 	"github.com/mitchellh/mapstructure"
@@ -107,6 +108,37 @@ func parseOutputs(action *types.CompositeAction, data map[interface{}]interface{
 	return nil
 }
 
+func tryMatchRemoteUses(text string) ([][]string, bool) {
+	regex := *regexp.MustCompile(`(.+)\/(.+)@(.+)`)
+
+	res := regex.FindAllStringSubmatch(text, -1)
+	if res != nil {
+		return res, true
+	}
+
+	return res, false
+}
+
+func parseUses(ext *types.ExternalAction, uses string) error {
+	if remote, ok := tryMatchRemoteUses(uses); ok {
+		ext.Creator = remote[0][1]
+		ext.Name = remote[0][2]
+		ext.Version = remote[0][3]
+		ext.Local = false
+
+		return nil
+	}
+
+	// If remote regex doesn't match, assume its a local reference to an action
+	logrus.Debug("Matching local action reference")
+
+	ext.Local = true
+	ext.LocalPath = &uses
+	ext.Name = filepath.Base(uses)
+
+	return nil
+}
+
 func parseExternalActions(action *types.CompositeAction, data map[interface{}]interface{}) error {
 	runs, ok := data["runs"].(map[string]interface{})
 	if !ok {
@@ -139,13 +171,12 @@ func parseExternalActions(action *types.CompositeAction, data map[interface{}]in
 			ext.StepID = stepID
 		}
 
-		regex := *regexp.MustCompile(`(.+)\/(.+)@(.+)`)
-		res := regex.FindAllStringSubmatch(step["uses"].(string), -1)
+		err := parseUses(&ext, step["uses"].(string))
+		if err != nil {
+			return errors.Wrap(err, "couldn't parse the value in the 'uses' field")
+		}
 
-		// There should only be one match
-		ext.Creator = res[0][1]
-		ext.Name = res[0][2]
-		ext.Version = res[0][3]
+		logrus.Debug(ext)
 
 		action.AddExternalAction(ext)
 	}
