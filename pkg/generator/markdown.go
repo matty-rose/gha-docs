@@ -23,6 +23,7 @@ package generator
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 
 	"github.com/matty-rose/gha-docs/pkg/document"
@@ -77,6 +78,11 @@ func (mdg markdownGenerator) generateInputTable(act *types.CompositeAction, doc 
 	columns := []string{"Name", "Description", "Required", "Default"}
 
 	var rows [][]string
+
+	sort.Slice(act.Inputs, func(a, b int) bool {
+		return act.Inputs[a].Name < act.Inputs[b].Name
+	})
+
 	for _, inp := range act.Inputs {
 		rows = append(
 			rows,
@@ -96,6 +102,11 @@ func (mdg markdownGenerator) generateOutputTable(act *types.CompositeAction, doc
 	columns := []string{"Name", "Description", "Value"}
 
 	var rows [][]string
+
+	sort.Slice(act.Outputs, func(a, b int) bool {
+		return act.Outputs[a].Name < act.Outputs[b].Name
+	})
+
 	for _, out := range act.Outputs {
 		rows = append(rows, []string{out.Name, out.Description, doc.FormatCode(out.Value)})
 	}
@@ -107,6 +118,11 @@ func (mdg markdownGenerator) generateExternalActionTable(act *types.CompositeAct
 	columns := []string{"Name", "Creator", "Version", "Step Name", "Step ID"}
 
 	var rows [][]string
+
+	sort.Slice(act.Uses, func(a, b int) bool {
+		return act.Uses[a].Name < act.Uses[b].Name
+	})
+
 	for _, act := range act.Uses {
 		rows = append(
 			rows,
@@ -141,6 +157,10 @@ func (mdg markdownGenerator) generateExampleUsageBlock(act *types.CompositeActio
 	}
 
 	doc.WriteTextLn("  with:")
+
+	sort.Slice(act.Inputs, func(a, b int) bool {
+		return act.Inputs[a].Name < act.Inputs[b].Name
+	})
 
 	for idx, inp := range act.Inputs {
 		doc.WriteTextLn(fmt.Sprintf("    # %s", inp.Description))
